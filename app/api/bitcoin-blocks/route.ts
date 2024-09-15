@@ -7,7 +7,7 @@ const GET = async () => {
   try {
     const blocks = await prisma.bitcoinBlock.findMany({
       orderBy: { height: "desc" },
-      take: 5,
+      take: 25,
     });
     return NextResponse.json(blocks);
   } catch (error) {

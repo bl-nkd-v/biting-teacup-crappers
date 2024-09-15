@@ -46,7 +46,7 @@ const POST = async (request: Request) => {
     return NextResponse.json({ error: "Pet not found" }, { status: 404 });
   }
 
-  if (action === "feed" && pet.availableEggs > 0 && pet.hunger > 0) {
+  if (action === "feed" && pet.availableEggs > 0) {
     const eggsConsumed = pet.eggsConsumed + 1;
     const updatedPet = await prisma.pet.update({
       where: { userId },
@@ -64,4 +64,26 @@ const POST = async (request: Request) => {
   return NextResponse.json(pet);
 };
 
-export { GET, POST };
+const PUT = async (request: Request) => {
+  const { userId, name } = await request.json();
+
+  if (!userId) {
+    return NextResponse.json({ error: "User ID is required" }, { status: 400 });
+  }
+
+  try {
+    const updatedPet = await prisma.pet.update({
+      where: { userId },
+      data: { name },
+    });
+    return NextResponse.json(updatedPet);
+  } catch (error) {
+    console.error("Error updating pet:", error);
+    return NextResponse.json(
+      { error: "Failed to update pet" },
+      { status: 500 }
+    );
+  }
+};
+
+export { GET, POST, PUT };

@@ -7,6 +7,7 @@ import {
   useColorModeValue,
   HStack,
   Badge,
+  Flex,
 } from "@chakra-ui/react";
 
 interface Block {
@@ -33,11 +34,11 @@ const BitcoinBlockTracker = () => {
 
   const calculateEggs = (reward: number) => Math.floor(reward * 10);
 
-  const bgColor = useColorModeValue("white", "gray.700");
   const textColor = useColorModeValue("gray.700", "white");
   const greenColor = useColorModeValue("green.600", "green.200");
   const boxColor = useColorModeValue("gray.100", "gray.600");
   const latestBoxColor = useColorModeValue("blue.100", "blue.700");
+  const grayColor = useColorModeValue("gray.600", "gray.200");
 
   const calculateTimeAgo = (timestamp: Date) => {
     const now = new Date();
@@ -46,58 +47,82 @@ const BitcoinBlockTracker = () => {
       (now.getTime() - blockTime.getTime()) / 1000
     );
 
-    if (diffSeconds < 60) return "few seconds ago";
+    if (diffSeconds < 60) return "A few seconds ago";
     if (diffSeconds < 3600) return `${Math.floor(diffSeconds / 60)}m ago`;
     if (diffSeconds < 86400) return `${Math.floor(diffSeconds / 3600)}h ago`;
     return `${Math.floor(diffSeconds / 86400)}d ago`;
   };
 
   return (
-    <Box bg={bgColor} p={4} borderRadius="md" boxShadow="md">
+    <Box>
       <Heading size="md" mb={4} color={textColor}>
         Recent Blocks
       </Heading>
-      <HStack spacing={3} overflowX="auto" pb={2}>
-        {blocks.map((block, index) => (
-          <Box
-            key={block.id}
-            p={3}
-            bg={index === 0 ? latestBoxColor : boxColor}
-            borderRadius="md"
-            width="150px"
-            height="150px"
-            display="flex"
-            flexDirection="column"
-            justifyContent="space-between"
-            position="relative"
-          >
-            {index === 0 && (
-              <Badge
-                position="absolute"
-                bottom={2}
-                right={2}
-                colorScheme="green"
-              >
-                Latest
-              </Badge>
-            )}
-            <VStack align="start" spacing={1}>
-              <Text fontWeight="bold" color={textColor}>
-                Block {block.height}
-              </Text>
-              <Text fontSize="sm" fontWeight="bold" color={greenColor}>
-                Eggs Received: {calculateEggs(block.reward)}
-              </Text>
-              <Text fontSize="sm" color={textColor}>
-                Reward: {block.reward.toFixed(2)} BTC
-              </Text>
-              <Text fontSize="xs" color={textColor}>
-                {calculateTimeAgo(block.timestamp)}
-              </Text>
-            </VStack>
-          </Box>
-        ))}
-      </HStack>
+      <Flex
+        overflowX="auto"
+        pb={2}
+        css={{
+          "&::-webkit-scrollbar": {
+            width: "8px",
+            height: "8px",
+            background: "transparent",
+          },
+          "&::-webkit-scrollbar-track": {
+            width: "6px",
+            background: "transparent",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            background: useColorModeValue(
+              "rgba(0,0,0,0.2)",
+              "rgba(255,255,255,0.2)"
+            ),
+            borderRadius: "24px",
+          },
+        }}
+      >
+        <HStack spacing={2}>
+          {blocks.map((block, index) => (
+            <Box
+              key={block.id}
+              p={2}
+              bg={index === 0 ? latestBoxColor : boxColor}
+              borderRadius="md"
+              minWidth="120px"
+              height="120px"
+              display="flex"
+              flexDirection="column"
+              justifyContent="space-between"
+              position="relative"
+            >
+              {index === 0 && (
+                <Badge
+                  position="absolute"
+                  bottom={1}
+                  right={1}
+                  colorScheme="green"
+                  fontSize="xx-small"
+                >
+                  Latest
+                </Badge>
+              )}
+              <VStack align="start" spacing={0}>
+                <Text fontWeight="bold" fontSize="xs" color={textColor}>
+                  Block {block.height}
+                </Text>
+                <Text fontSize="xs" fontWeight="bold" color={greenColor}>
+                  Eggs: {calculateEggs(block.reward)}
+                </Text>
+                <Text fontSize="xs" color={textColor}>
+                  {block.reward.toString().slice(0, 4)} BTC
+                </Text>
+                <Text fontSize="xs" color={grayColor}>
+                  {calculateTimeAgo(block.timestamp)}
+                </Text>
+              </VStack>
+            </Box>
+          ))}
+        </HStack>
+      </Flex>
     </Box>
   );
 };
