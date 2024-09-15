@@ -8,19 +8,38 @@
     "start": "next start",
     "lint": "next lint"
   },
+  "browser": {
+    "fs": false,
+    "path": false,
+    "os": false
+  },
   "dependencies": {
+    "@chakra-ui/react": "^2.8.2",
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@prisma/client": "^5.19.1",
+    "bitcoin-core": "^4.2.0",
+    "bunyan": "^1.8.15",
+    "debugnyan": "^4.1.1",
+    "dotenv": "^16.4.5",
+    "framer-motion": "^11.5.4",
+    "fs": "^0.0.1-security",
+    "next": "14.2.11",
+    "node-cron": "^3.0.3",
+    "prisma": "^5.19.1",
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.2.11"
+    "source-map-support": "^0.5.21"
   },
   "devDependencies": {
-    "typescript": "^5",
     "@types/node": "^20",
+    "@types/node-cron": "^3.0.11",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.11",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.11"
+    "typescript": "^5"
   }
 }

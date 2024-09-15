@@ -1,0 +1,26 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Pet {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  hunger        Int      @default(0)
+  lastFed       DateTime @default(now())
+  lastUpdated   DateTime @default(now())
+  availableEggs Int      @default(0)
+  eggsConsumed  Int      @default(0)
+  level         Int      @default(1)
+}
+
+model BitcoinBlock {
+  id        String   @id @default(cuid())
+  height    Int      @unique
+  timestamp DateTime
+  reward    Float
+}
