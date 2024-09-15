@@ -12,6 +12,7 @@ import Pet from "../components/Pet";
 import { useUser } from "../contexts/UserContext";
 import { useState } from "react";
 import BitcoinBlockTracker from "./BitcoinBlockTracker";
+import Leaderboard from "./Leaderboard";
 
 const Home = () => {
   const { userId, setUserId } = useUser();
@@ -80,6 +81,18 @@ const Home = () => {
                 </Button>
               </VStack>
             )}
+          </Box>
+
+          <Box
+            p={8}
+            bg={useColorModeValue("white", "gray.700")}
+            borderRadius="lg"
+            boxShadow="xl"
+            overflow="hidden"
+            w="full"
+            maxW="3xl"
+          >
+            <Leaderboard />
           </Box>
 
           <Box

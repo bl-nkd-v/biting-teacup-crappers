@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Box,
   VStack,
@@ -18,6 +18,7 @@ import {
   progressToNextLevel,
 } from "@/app/services/petCalculations";
 import { CheckIcon, CloseIcon, EditIcon } from "@chakra-ui/icons";
+import FloatingEmoji from "./FloatingEmoji";
 
 const INTERVAL = 10000;
 
@@ -48,6 +49,48 @@ const Pet = () => {
   const [pet, setPet] = useState<PetData | null>(null);
   const [name, setName] = useState("");
   const [isNaming, setIsNaming] = useState(false);
+  const [floatingEmojis, setFloatingEmojis] = useState<
+    { id: number; x: number; y: number }[]
+  >([]);
+  const [animatedEggsConsumed, setAnimatedEggsConsumed] = useState(
+    pet?.eggsConsumed || 0
+  );
+  const [animatedHunger, setAnimatedHunger] = useState(pet?.hunger || 0);
+  const isFirstRender = useRef(true);
+
+  useEffect(() => {
+    if (isFirstRender.current && pet) {
+      isFirstRender.current = false;
+      setAnimatedEggsConsumed(pet?.eggsConsumed || 0);
+      setAnimatedHunger(pet?.hunger || 0);
+      return;
+    }
+
+    const eggInterval = setInterval(() => {
+      setAnimatedEggsConsumed((prev) => {
+        if (prev === pet?.eggsConsumed) {
+          clearInterval(eggInterval);
+          return prev;
+        }
+        return prev + (pet?.eggsConsumed || 0 > prev ? 1 : -1);
+      });
+    }, 50);
+
+    const hungerInterval = setInterval(() => {
+      setAnimatedHunger((prev) => {
+        if (prev === pet?.hunger) {
+          clearInterval(hungerInterval);
+          return prev;
+        }
+        return prev + (pet?.hunger || 0 > prev ? 1 : -1);
+      });
+    }, 50);
+
+    return () => {
+      clearInterval(eggInterval);
+      clearInterval(hungerInterval);
+    };
+  }, [pet, pet?.eggsConsumed, pet?.hunger]);
 
   useEffect(() => {
     if (userId) {
@@ -59,7 +102,7 @@ const Pet = () => {
     }
   }, [userId]);
 
-  const feedPet = async () => {
+  const feedPet = async (event: React.MouseEvent<HTMLButtonElement>) => {
     if (!userId) return;
     const response = await fetch("/api/pet", {
       method: "POST",
@@ -71,6 +114,18 @@ const Pet = () => {
     });
     const data = await response.json();
     setPet(data);
+
+    const newEmoji = {
+      id: Date.now(),
+      x: event.clientX,
+      y: event.clientY,
+    };
+    setFloatingEmojis((prev) => [...prev, newEmoji]);
+    setTimeout(() => {
+      setFloatingEmojis((prev) =>
+        prev.filter((emoji) => emoji.id !== newEmoji.id)
+      );
+    }, 1000);
   };
 
   const handleNameSubmit = async (name: string) => {
@@ -111,7 +166,7 @@ const Pet = () => {
 
   const level = calculateLevel(pet.eggsConsumed);
   const nextLevelEggs = eggsForNextLevel(level);
-  const progress = progressToNextLevel(pet.eggsConsumed, level);
+  const progress = progressToNextLevel(animatedEggsConsumed, level);
 
   const nameComponent = isNaming ? (
     <>
@@ -152,42 +207,50 @@ const Pet = () => {
   );
 
   return (
-    <VStack spacing={4}>
-      <Text fontSize="6xl">{getPetEmoji(pet.hunger)}</Text>
-      <Heading as="h2" size="lg" textAlign="center" color={textColor}>
-        {nameComponent}
-      </Heading>
+    <>
+      <VStack spacing={4}>
+        <Text fontSize="6xl">{getPetEmoji(pet.hunger)}</Text>
+        <Heading as="h2" size="lg" textAlign="center" color={textColor}>
+          {nameComponent}
+        </Heading>
 
-      <VStack spacing={2} align="stretch"></VStack>
-      <Box w="full">
-        <Text mb={1} fontWeight="semibold" color={textColor}>
-          Level: {level} - Eggs Eaten: {pet.eggsConsumed}
+        <VStack spacing={2} align="stretch"></VStack>
+        <Box w="full">
+          <Text mb={1} fontWeight="semibold" color={textColor}>
+            Level: {level} - {pet.eggsConsumed} / {nextLevelEggs}
+          </Text>
+          <Progress
+            mb={1}
+            value={progress * 100}
+            borderRadius="full"
+            transition={isFirstRender.current ? "none" : "all 0.3s"}
+          />
+          <Text mb={1} fontWeight="semibold" color={textColor}>
+            Hunger: {animatedHunger}%
+          </Text>
+          <Progress
+            value={animatedHunger}
+            colorScheme={getHungerColor(animatedHunger)}
+            borderRadius="full"
+            transition={isFirstRender.current ? "none" : "all 0.3s"}
+          />
+        </Box>
+        <Text fontWeight="semibold" color={textColor}>
+          Available Eggs: {pet.availableEggs}
         </Text>
-        <Text mb={1} fontWeight="semibold" color={textColor}>
-          Next Level: {nextLevelEggs} eggs
-        </Text>
-        <Progress mb={1} value={progress * 100} borderRadius="full" />
-        <Text mb={1} fontWeight="semibold" color={textColor}>
-          Hunger: {pet.hunger}%
-        </Text>
-        <Progress
-          value={pet.hunger}
-          colorScheme={getHungerColor(pet.hunger)}
-          borderRadius="full"
-        />
-      </Box>
-      <Text fontWeight="semibold" color={textColor}>
-        Available Eggs: {pet.availableEggs}
-      </Text>
-      <Button
-        onClick={feedPet}
-        colorScheme="blue"
-        isDisabled={pet.availableEggs === 0}
-        w="full"
-      >
-        Feed
-      </Button>
-    </VStack>
+        <Button
+          onClick={feedPet}
+          colorScheme="blue"
+          isDisabled={pet.availableEggs === 0}
+          w="full"
+        >
+          Feed
+        </Button>
+      </VStack>
+      {floatingEmojis.map((emoji) => (
+        <FloatingEmoji key={emoji.id} x={emoji.x - 15} y={emoji.y - 30} />
+      ))}
+    </>
   );
 };
 
