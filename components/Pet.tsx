@@ -19,6 +19,7 @@ import {
 } from "@/app/services/petCalculations";
 import { CheckIcon, CloseIcon, EditIcon } from "@chakra-ui/icons";
 import FloatingEmoji from "./FloatingEmoji";
+import PetArtwork from "./PetArtwork";
 
 const INTERVAL = 10000;
 
@@ -28,6 +29,13 @@ interface PetData {
   eggsConsumed: number;
   level: number;
   name?: string;
+  traits?: {
+    baseShape: number;
+    eyes: number;
+    mouth: number;
+    accessory: number;
+    colorScheme: number;
+  };
 }
 
 const fetchPet = async (userId: string) => {
@@ -52,45 +60,7 @@ const Pet = () => {
   const [floatingEmojis, setFloatingEmojis] = useState<
     { id: number; x: number; y: number }[]
   >([]);
-  const [animatedEggsConsumed, setAnimatedEggsConsumed] = useState(
-    pet?.eggsConsumed || 0
-  );
-  const [animatedHunger, setAnimatedHunger] = useState(pet?.hunger || 0);
   const isFirstRender = useRef(true);
-
-  useEffect(() => {
-    if (isFirstRender.current && pet) {
-      isFirstRender.current = false;
-      setAnimatedEggsConsumed(pet?.eggsConsumed || 0);
-      setAnimatedHunger(pet?.hunger || 0);
-      return;
-    }
-
-    const eggInterval = setInterval(() => {
-      setAnimatedEggsConsumed((prev) => {
-        if (prev === pet?.eggsConsumed) {
-          clearInterval(eggInterval);
-          return prev;
-        }
-        return prev + (pet?.eggsConsumed || 0 > prev ? 1 : -1);
-      });
-    }, 50);
-
-    const hungerInterval = setInterval(() => {
-      setAnimatedHunger((prev) => {
-        if (prev === pet?.hunger) {
-          clearInterval(hungerInterval);
-          return prev;
-        }
-        return prev + (pet?.hunger || 0 > prev ? 1 : -1);
-      });
-    }, 50);
-
-    return () => {
-      clearInterval(eggInterval);
-      clearInterval(hungerInterval);
-    };
-  }, [pet, pet?.eggsConsumed, pet?.hunger]);
 
   useEffect(() => {
     if (userId) {
@@ -147,12 +117,12 @@ const Pet = () => {
     }
   };
 
-  const getPetEmoji = (hunger: number) => {
-    if (hunger < 30) return "😊";
-    if (hunger < 60) return "😐";
-    if (hunger < 90) return "😟";
-    return "😫";
-  };
+  // const getPetEmoji = (hunger: number) => {
+  //   if (hunger < 30) return "😊";
+  //   if (hunger < 60) return "😐";
+  //   if (hunger < 90) return "😟";
+  //   return "😫";
+  // };
 
   const getHungerColor = (hunger: number) => {
     if (hunger < 30) return "green";
@@ -166,7 +136,7 @@ const Pet = () => {
 
   const level = calculateLevel(pet.eggsConsumed);
   const nextLevelEggs = eggsForNextLevel(level);
-  const progress = progressToNextLevel(animatedEggsConsumed, level);
+  const progress = progressToNextLevel(pet.eggsConsumed, level);
 
   const nameComponent = isNaming ? (
     <>
@@ -206,10 +176,18 @@ const Pet = () => {
     </HStack>
   );
 
+  const defaultTraits = {
+    baseShape: 0,
+    eyes: 0,
+    mouth: 0,
+    accessory: 0,
+    colorScheme: 0,
+  };
+
   return (
     <>
       <VStack spacing={4}>
-        <Text fontSize="6xl">{getPetEmoji(pet.hunger)}</Text>
+        <PetArtwork traits={pet?.traits || defaultTraits} level={pet.level} />
         <Heading as="h2" size="lg" textAlign="center" color={textColor}>
           {nameComponent}
         </Heading>
@@ -226,11 +204,11 @@ const Pet = () => {
             transition={isFirstRender.current ? "none" : "all 0.3s"}
           />
           <Text mb={1} fontWeight="semibold" color={textColor}>
-            Hunger: {animatedHunger}%
+            Hunger: {pet.hunger}%
           </Text>
           <Progress
-            value={animatedHunger}
-            colorScheme={getHungerColor(animatedHunger)}
+            value={pet.hunger}
+            colorScheme={getHungerColor(pet.hunger)}
             borderRadius="full"
             transition={isFirstRender.current ? "none" : "all 0.3s"}
           />
@@ -241,7 +219,7 @@ const Pet = () => {
         <Button
           onClick={feedPet}
           colorScheme="blue"
-          isDisabled={pet.availableEggs === 0}
+          isDisabled={pet.availableEggs <= 0}
           w="full"
         >
           Feed

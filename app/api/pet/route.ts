@@ -4,6 +4,16 @@ import { calculateLevel } from "@/app/services/petCalculations";
 
 const prisma = new PrismaClient();
 
+const generateTraits = () => {
+  return {
+    baseShape: Math.floor(Math.random() * 3),
+    eyes: Math.floor(Math.random() * 2),
+    mouth: Math.floor(Math.random() * 2),
+    accessory: Math.floor(Math.random() * 3),
+    colorScheme: Math.floor(Math.random() * 4),
+  };
+};
+
 const GET = async (request: Request) => {
   const userId = request.headers.get("user-id");
   if (!userId) {
@@ -20,6 +30,7 @@ const GET = async (request: Request) => {
           availableEggs: 0,
           eggsConsumed: 0,
           level: 1,
+          traits: generateTraits(),
         },
       });
     }
@@ -47,13 +58,16 @@ const POST = async (request: Request) => {
   }
 
   if (action === "feed" && pet.availableEggs > 0) {
-    const eggsConsumed = pet.eggsConsumed + 1;
+    const feedAmount = 1;
+    const eggsConsumed = pet.eggsConsumed + feedAmount;
+    const hunger = Math.max(pet.hunger - 10, 0);
+    const availableEggs = Math.max(pet.availableEggs - feedAmount, 0);
     const updatedPet = await prisma.pet.update({
       where: { userId },
       data: {
-        hunger: Math.max(pet.hunger - 10, 0),
-        availableEggs: pet.availableEggs - 1,
-        eggsConsumed: eggsConsumed,
+        hunger,
+        availableEggs,
+        eggsConsumed,
         level: calculateLevel(eggsConsumed),
         lastFed: new Date(),
       },

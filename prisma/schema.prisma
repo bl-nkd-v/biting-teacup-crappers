@@ -17,6 +17,7 @@ model Pet {
   eggsConsumed  Int      @default(0)
   level         Int      @default(1)
   name          String?
+  traits        Json?
 }
 
 model BitcoinBlock {
