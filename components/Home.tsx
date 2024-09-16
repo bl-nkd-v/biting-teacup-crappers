@@ -49,7 +49,7 @@ const Home = () => {
             Biting Teacup Crappers
           </Text>
 
-          <Button onClick={logout}>Log Out</Button>
+          {userId && <Button onClick={logout}>Log Out</Button>}
 
           <Box
             p={8}

@@ -10,6 +10,7 @@ import {
   IconButton,
   Input,
   HStack,
+  Tooltip,
 } from "@chakra-ui/react";
 import { useUser } from "../contexts/UserContext";
 import {
@@ -60,7 +61,11 @@ const Pet = () => {
   const [floatingEmojis, setFloatingEmojis] = useState<
     { id: number; x: number; y: number }[]
   >([]);
+  const [showEggTooltip, setShowEggTooltip] = useState(() => {
+    return localStorage.getItem(`eggTooltipShown-${userId}`) !== "true";
+  });
   const isFirstRender = useRef(true);
+  const eggRef = useRef(null);
 
   useEffect(() => {
     if (userId) {
@@ -71,6 +76,16 @@ const Pet = () => {
       return () => clearInterval(interval);
     }
   }, [userId]);
+
+  useEffect(() => {
+    if (showEggTooltip) {
+      const timer = setTimeout(() => {
+        setShowEggTooltip(false);
+        localStorage.setItem(`eggTooltipShown-${userId}`, "true");
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [showEggTooltip, userId]);
 
   const feedPet = async (event: React.MouseEvent<HTMLButtonElement>) => {
     if (!userId) return;
@@ -213,9 +228,16 @@ const Pet = () => {
             transition={isFirstRender.current ? "none" : "all 0.3s"}
           />
         </Box>
-        <Text fontWeight="semibold" color={textColor}>
-          Available Eggs: {pet.availableEggs}
-        </Text>
+        <Tooltip
+          isOpen={showEggTooltip}
+          label="You got 25 free eggs to start!"
+          placement="bottom"
+          hasArrow
+        >
+          <Text ref={eggRef} fontWeight="semibold" color={textColor}>
+            Available Eggs: {pet.availableEggs}
+          </Text>
+        </Tooltip>
         <Button
           onClick={feedPet}
           colorScheme="blue"

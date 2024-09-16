@@ -27,7 +27,7 @@ const GET = async (request: Request) => {
         data: {
           userId,
           hunger: 0,
-          availableEggs: 0,
+          availableEggs: 25,
           eggsConsumed: 0,
           level: 1,
           traits: generateTraits(),
