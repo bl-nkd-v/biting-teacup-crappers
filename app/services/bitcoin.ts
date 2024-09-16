@@ -14,10 +14,10 @@ const client = new Client({
   port: Number(process.env.BITCOIN_RPC_PORT) || 443,
   username: process.env.BITCOIN_RPC_USER || "",
   password: process.env.BITCOIN_RPC_PASS || "",
-  timeout: 60000,
+  timeout: 30000,
   ssl: {
     enabled: true,
-    strict: false,
+    strict: process.env.ENV !== "development",
   },
 });
 let lastKnownBlock: string | null = null;
