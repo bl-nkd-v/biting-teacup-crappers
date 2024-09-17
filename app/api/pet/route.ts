@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import { calculateLevel } from "@/app/services/petCalculations";
-
-const prisma = new PrismaClient();
+import prisma from "@/app/services/database";
 
 const generateTraits = () => {
   return {

@@ -2,11 +2,9 @@ import dotenv from "dotenv";
 import Client from "bitcoin-core";
 
 import { EventEmitter } from "events";
-import { PrismaClient } from "@prisma/client";
+import prisma from "./database";
 
 dotenv.config();
-
-const prisma = new PrismaClient();
 
 type Block = {
   time: number;

@@ -102,6 +102,9 @@ To run this project locally, follow these steps:
   - [ ] Connect Wallet
   - [ ] Disconnect Wallet
   - [ ] (?) Tokenization of Pets
+- [ ] Longer Term Goals
+  - [ ] Handle scale - Should debounce requests for feeding and other actions
+  - [ ] Egg Shop
 
 ## Getting Started
 
