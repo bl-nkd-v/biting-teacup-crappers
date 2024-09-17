@@ -3,7 +3,7 @@ import { withAccelerate } from "@prisma/extension-accelerate";
 
 const prismaClientSingleton = () => {
   return new PrismaClient({
-    log: ["query", "info", "warn", "error"],
+    log: ["warn", "error"],
     datasources: {
       db: {
         url: process.env.DATABASE_URL,

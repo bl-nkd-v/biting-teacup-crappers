@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { client, createBlock } from "@/app/services/bitcoin";
 
+// TODO: Remove this route - Temporary fix for blocks not being backfilled
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const count = Number(searchParams.get("count")) || 10; // Default to 10 blocks if not specified

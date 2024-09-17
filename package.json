@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "vercel-build": "prisma generate && prisma migrate deploy && next build",
+    "vercel-build": "prisma generate --no-engine && prisma migrate deploy && next build",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prisma:generate": "prisma generate",
+    "prisma:generate": "prisma generate --no-engine",
     "prisma:migrate": "dotenv -e .env.local -- prisma migrate deploy",
     "prisma:studio": "dotenv -e .env.local -- prisma studio"
   },
