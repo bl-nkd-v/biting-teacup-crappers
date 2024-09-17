@@ -88,13 +88,16 @@ To run this project locally, follow these steps:
   - [x] Pet Artwork Generation
   - [x] Traits
   - [ ] Rarity
+  - [ ] Improve Artwork
+  - [ ] More Traits
 - [ ] Stats for Pets
   - [x] Levels
   - [ ] Happiness
   - [ ] Upgrades
   - [x] Leaderboard for pets
 - [ ] UI/UX
-  - [ ] Proper auth
+  - [ ] Proper Auth
+  - [ ] Better UI
 - [ ] Wallet Integration
   - [ ] Connect Wallet
   - [ ] Disconnect Wallet
