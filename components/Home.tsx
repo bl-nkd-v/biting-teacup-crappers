@@ -60,6 +60,53 @@ const Home = () => {
             w="full"
             maxW="3xl"
           >
+            <Heading
+              as="h3"
+              size="md"
+              mb={2}
+              color={useColorModeValue("gray.700", "white")}
+            >
+              How it works:
+            </Heading>
+            <VStack
+              align="start"
+              spacing={1}
+              color={useColorModeValue("gray.600", "gray.200")}
+            >
+              <Text>• You gain eggs with each new Bitcoin block!</Text>
+              <Text>&nbsp;&nbsp;&nbsp;&nbsp;• 1 Egg per 0.1 BTC mined</Text>
+              <Text>
+                • Feed your pet eggs to keep its hunger low!
+                {/* , and its happiness */}
+                {/* up! */}
+              </Text>{" "}
+              <Text>
+                • As your pet levels up, its traits will be revealed! This
+                includes its eyes, mouth, and accessories.
+                {/* , and its happiness */}
+                {/* up! */}
+              </Text>
+              {/* <Text>• The happier your pet, the more eggs it produces!</Text> */}
+              {/* <Text>
+                • If your pet reaches 100% hunger, it&apos;ll die! Dead pets
+                don&apos;t produce eggs :&apos;( womp womp.
+              </Text> */}
+              {/* <Text>
+                • You can revive a dead pet by feeding it a number of eggs equal
+                to its level!
+              </Text> */}
+            </VStack>
+          </Box>
+
+          <Box
+            p={8}
+            bg={useColorModeValue("white", "gray.700")}
+            borderRadius="lg"
+            boxShadow="xl"
+            overflow="hidden"
+            w="full"
+            maxW="3xl"
+          >
             {userId ? (
               <Pet />
             ) : (
@@ -105,47 +152,6 @@ const Home = () => {
             maxW="3xl"
           >
             <BitcoinBlockTracker />
-          </Box>
-
-          <Box
-            p={8}
-            bg={useColorModeValue("white", "gray.700")}
-            borderRadius="lg"
-            boxShadow="xl"
-            overflow="hidden"
-            w="full"
-            maxW="3xl"
-          >
-            <Heading
-              as="h3"
-              size="md"
-              mb={2}
-              color={useColorModeValue("gray.700", "white")}
-            >
-              How it works:
-            </Heading>
-            <VStack
-              align="start"
-              spacing={1}
-              color={useColorModeValue("gray.600", "gray.200")}
-            >
-              <Text>• You gain eggs with each new Bitcoin block!</Text>
-              <Text>&nbsp;&nbsp;&nbsp;&nbsp;• 1 Egg per 0.1 BTC mined</Text>
-              <Text>
-                • Feed your pet eggs to keep its hunger low!
-                {/* , and its happiness */}
-                {/* up! */}
-              </Text>
-              {/* <Text>• The happier your pet, the more eggs it produces!</Text> */}
-              {/* <Text>
-                • If your pet reaches 100% hunger, it&apos;ll die! Dead pets
-                don&apos;t produce eggs :&apos;( womp womp.
-              </Text> */}
-              {/* <Text>
-                • You can revive a dead pet by feeding it a number of eggs equal
-                to its level!
-              </Text> */}
-            </VStack>
           </Box>
         </VStack>
       </Container>

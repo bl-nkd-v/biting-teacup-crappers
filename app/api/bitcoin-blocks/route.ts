@@ -9,9 +9,7 @@ export const GET = async () => {
     });
 
     const response = NextResponse.json(blocks);
-
     response.headers.set("Cache-Control", "no-store, max-age=0");
-
     return response;
   } catch (error) {
     console.error("Failed to fetch Bitcoin blocks:", error);
