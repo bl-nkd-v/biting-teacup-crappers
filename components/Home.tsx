@@ -23,7 +23,7 @@ const Home = () => {
     "linear(to-b, purple.900, blue.900)"
   );
   const connectBgColor = useColorModeValue("gray.50", "gray.600");
-  const connectTextColor = useColorModeValue("gray.700", "white");
+  // const connectTextColor = useColorModeValue("gray.700", "white");
 
   const submitUsername = () => {
     setUserId(username);
@@ -64,13 +64,13 @@ const Home = () => {
               <Pet />
             ) : (
               <VStack spacing={4} bg={connectBgColor} p={8} borderRadius="md">
-                <Text fontSize="xl" color={connectTextColor}>
+                {/* <Text fontSize="xl" color={connectTextColor}>
                   Connect your wallet to start!
                 </Text>
                 <Button colorScheme="blue">Connect Wallet</Button>
                 <Text fontSize="xl" color={connectTextColor}>
                   Don&apos;t have a wallet?
-                </Text>
+                </Text> */}
                 <Input
                   placeholder="Enter your username"
                   value={username}
@@ -129,13 +129,12 @@ const Home = () => {
               spacing={1}
               color={useColorModeValue("gray.600", "gray.200")}
             >
+              <Text>• You gain eggs with each new Bitcoin block!</Text>
+              <Text>&nbsp;&nbsp;&nbsp;&nbsp;• 1 Egg per 0.1 BTC mined</Text>
               <Text>
-                • You gain eggs with each new Bitcoin block, based on the amount
-                of BTC mined (1 BTC Block Reward= 10 Eggs)
-              </Text>
-              <Text>
-                • Feed your pet eggs to keep its hunger low, and its happiness
-                up!
+                • Feed your pet eggs to keep its hunger low!
+                {/* , and its happiness */}
+                {/* up! */}
               </Text>
               {/* <Text>• The happier your pet, the more eggs it produces!</Text> */}
               {/* <Text>

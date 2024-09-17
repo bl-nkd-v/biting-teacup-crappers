@@ -19,8 +19,11 @@ export async function GET() {
       },
       take: 100, // Limit to top 100 pets
     });
+    const response = NextResponse.json(pets);
 
-    return NextResponse.json(pets);
+    response.headers.set("Cache-Control", "no-store, max-age=0");
+
+    return response;
   } catch (error) {
     console.error("Failed to fetch leaderboard data:", error);
     return NextResponse.json(
@@ -29,3 +32,5 @@ export async function GET() {
     );
   }
 }
+
+export const dynamic = "force-dynamic";
