@@ -44,11 +44,9 @@ const updateHunger = async () => {
 };
 
 const startPetUpdateJobs = () => {
-  console.log("Starting pet update jobs");
-
   // On new block, update eggs
   blockEmitter.on("newBlock", updateAvailableEggs);
-  console.log("Block event listener set up");
+  console.log("Block event listener initialized");
 
   // Update hunger every minute
   cron.schedule("* * * * *", updateHunger);
