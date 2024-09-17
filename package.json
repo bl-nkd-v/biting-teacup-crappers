@@ -23,6 +23,7 @@
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@prisma/client": "^5.19.1",
+    "@prisma/extension-accelerate": "^1.1.0",
     "bitcoin-core": "^4.2.0",
     "bunyan": "^1.8.15",
     "debugnyan": "^4.1.1",

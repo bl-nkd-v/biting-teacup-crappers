@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { withAccelerate } from "@prisma/extension-accelerate";
 
 const prismaClientSingleton = () => {
   return new PrismaClient({
@@ -8,7 +9,7 @@ const prismaClientSingleton = () => {
         url: process.env.DATABASE_URL,
       },
     },
-  });
+  }).$extends(withAccelerate());
 };
 
 declare const globalThis: {
