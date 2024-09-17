@@ -8,6 +8,15 @@ dotenv.config();
 
 const prisma = new PrismaClient();
 
+type Block = {
+  time: number;
+  tx: Array<{
+    vout: Array<{
+      value: number;
+    }>;
+  }>;
+};
+
 const client = new Client({
   network: "mainnet",
   host: process.env.BITCOIN_RPC_HOST || "",
@@ -24,18 +33,19 @@ let lastKnownBlock: string | null = null;
 
 const blockEmitter = new EventEmitter();
 
-const getLatestBlockReward = async (): Promise<number> => {
+const getBlockTime = (block: Partial<Block>): number => {
+  return block.time || Date.now();
+};
+
+const getLatestBlockReward = (block: Partial<Block>): number => {
   try {
-    const blockchainInfo = await client.getBlockchainInfo();
-    const latestBlockHash = await client.getBlockHash(blockchainInfo.blocks);
-    const block = await client.getBlock(latestBlockHash, 2);
+    const coinbaseTx = block.tx?.[0];
 
-    const coinbaseTx = block.tx[0];
-
-    const blockReward = coinbaseTx.vout.reduce(
-      (sum: number, output: { value: number }) => sum + output.value,
-      0
-    );
+    const blockReward =
+      coinbaseTx?.vout?.reduce(
+        (sum: number, output: { value: number }) => sum + output.value,
+        0
+      ) ?? 0;
 
     return blockReward;
   } catch (error) {
@@ -53,14 +63,19 @@ const watchForNewBlocks = async () => {
     }
     if (lastKnownBlock !== currentBlockHash) {
       lastKnownBlock = currentBlockHash;
-      const blockReward = await getLatestBlockReward();
+
+      const blockchainInfo = await client.getBlockchainInfo();
+      const latestBlockHash = await client.getBlockHash(blockchainInfo.blocks);
+      const block = await client.getBlock(latestBlockHash, 2);
+      const blockReward = getLatestBlockReward(block);
+      const blockTime = getBlockTime(block);
       blockEmitter.emit("newBlock", blockReward);
       console.log(`New block detected, rewards: ${blockReward}`);
       await prisma.bitcoinBlock.create({
         data: {
           id: currentBlockHash,
           height: blockchainInfo.blocks,
-          timestamp: new Date(),
+          timestamp: new Date(blockTime * 1000),
           reward: blockReward,
         },
       });
