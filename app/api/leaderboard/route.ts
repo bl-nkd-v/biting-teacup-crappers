@@ -15,7 +15,7 @@ export async function GET() {
         userId: true,
       },
       orderBy: {
-        level: "desc",
+        eggsConsumed: "desc",
       },
       take: 100, // Limit to top 100 pets
     });

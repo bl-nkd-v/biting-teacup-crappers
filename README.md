@@ -18,24 +18,46 @@ Live demo: [https://bitingteacupcrappers.com](https://bitingteacupcrappers.com)
 
 To run this project locally, follow these steps:
 
-1. Clone the repository:
+1. Ensure you have Node.js and npm installed on your system.
+
+2. Install PostgreSQL:
+
+   - Download and install PostgreSQL from the [official website](https://www.postgresql.org/download/).
+   - During installation, note down the password you set for the postgres user.
+
+3. Clone the repository:
 
    ```
    git clone https://github.com/bl-nkd-v/biting-teacup-crappers
    cd biting-teacup-crappers
    ```
 
-2. Install dependencies:
+4. Install dependencies:
 
    ```
    yarn install
    ```
 
-3. Set up environment variables:
+5. Set up the database:
+
+   - Open a terminal and connect to PostgreSQL:
+     ```
+     psql -U postgres
+     ```
+   - Create a new database:
+     ```
+     CREATE DATABASE biting_teacup_crappers;
+     ```
+   - Exit psql:
+     ```
+     \q
+     ```
+
+6. Set up environment variables:
    Copy the `.env.example` file into your own `.env` file in the root directory and add the following variables:
 
    ```
-   DATABASE_URL=postgresql://username:password@localhost:5432/database_name?schema=public
+   DATABASE_URL=postgresql://username:your_password@localhost:5432/biting_teacup_crappers?schema=public
    BITCOIN_RPC_HOST=your_bitcoin_rpc_host
    BITCOIN_RPC_PORT=your_bitcoin_rpc_port
    BITCOIN_RPC_USER=your_bitcoin_rpc_user
@@ -43,20 +65,22 @@ To run this project locally, follow these steps:
    ENV=development
    ```
 
-4. Set up the database:
+   Replace `your_password` with the password you set during PostgreSQL installation.
+
+7. Set up the database:
 
    ```
    npx prisma generate
    npx prisma migrate dev
    ```
 
-5. Run the development server:
+8. Run the development server:
 
    ```
    yarn dev
    ```
 
-6. Open [http://localhost:3000](http://localhost:3000) in your browser to see the web app.
+9. Open [http://localhost:3000](http://localhost:3000) in your browser to see the web app.
 
 ## To-Do
 
