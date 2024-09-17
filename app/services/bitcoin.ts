@@ -52,6 +52,34 @@ const getLatestBlockReward = (block: Partial<Block>): number => {
   }
 };
 
+const createBlock = async (
+  blockhash: string,
+  height: number,
+  block: Partial<Block>
+) => {
+  const existingBlock = await prisma.bitcoinBlock.findUnique({
+    where: { id: blockhash },
+  });
+
+  if (existingBlock) {
+    console.log(`Block with id ${blockhash} already exists, skipping`);
+    return;
+  }
+
+  const blockReward = getLatestBlockReward(block);
+  blockEmitter.emit("newBlock", blockReward);
+  console.log(`New block detected, rewards: ${blockReward}`);
+  const blockTime = getBlockTime(block);
+  await prisma.bitcoinBlock.create({
+    data: {
+      id: blockhash,
+      height,
+      timestamp: new Date(blockTime * 1000),
+      reward: blockReward,
+    },
+  });
+};
+
 const watchForNewBlocks = async () => {
   try {
     const blockchainInfo = await client.getBlockchainInfo();
@@ -65,18 +93,7 @@ const watchForNewBlocks = async () => {
       const blockchainInfo = await client.getBlockchainInfo();
       const latestBlockHash = await client.getBlockHash(blockchainInfo.blocks);
       const block = await client.getBlock(latestBlockHash, 2);
-      const blockReward = getLatestBlockReward(block);
-      const blockTime = getBlockTime(block);
-      blockEmitter.emit("newBlock", blockReward);
-      console.log(`New block detected, rewards: ${blockReward}`);
-      await prisma.bitcoinBlock.create({
-        data: {
-          id: currentBlockHash,
-          height: blockchainInfo.blocks,
-          timestamp: new Date(blockTime * 1000),
-          reward: blockReward,
-        },
-      });
+      await createBlock(latestBlockHash, blockchainInfo.blocks, block);
     }
   } catch (error) {
     console.error("Error watching for new blocks:", error);
@@ -87,4 +104,11 @@ const watchForNewBlocks = async () => {
 
 watchForNewBlocks();
 
-export { blockEmitter, getLatestBlockReward, watchForNewBlocks };
+export {
+  blockEmitter,
+  client,
+  createBlock,
+  getBlockTime,
+  getLatestBlockReward,
+  watchForNewBlocks,
+};
