@@ -1,13 +1,18 @@
 import { NextResponse } from "next/server";
 import prisma from "@/app/services/database";
 
-const GET = async () => {
+export const GET = async () => {
   try {
     const blocks = await prisma.bitcoinBlock.findMany({
       orderBy: { height: "desc" },
       take: 25,
     });
-    return NextResponse.json(blocks);
+
+    const response = NextResponse.json(blocks);
+
+    response.headers.set("Cache-Control", "no-store, max-age=0");
+
+    return response;
   } catch (error) {
     console.error("Failed to fetch Bitcoin blocks:", error);
     return NextResponse.json(
@@ -17,4 +22,4 @@ const GET = async () => {
   }
 };
 
-export { GET };
+export const dynamic = "force-dynamic";
