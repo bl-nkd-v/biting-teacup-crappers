@@ -4,6 +4,8 @@ import { blockEmitter } from "./bitcoin";
 
 const prisma = new PrismaClient();
 
+// For Local Usage
+
 const updateAvailableEggs = async (blockReward: number) => {
   try {
     const newEggs = Math.floor(blockReward * 10); // 1 egg per 0.1 BTC Block Reward
