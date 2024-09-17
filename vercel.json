@@ -6,7 +6,8 @@
     },
     {
       "path": "/api/update-hunger",
-      "schedule": "* * * * *"
+      "schedule": "* * * * *",
+      "method": "POST"
     }
   ]
 }
