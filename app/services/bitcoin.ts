@@ -6,6 +6,9 @@ import prisma from "./database";
 
 dotenv.config();
 
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 5000;
+
 type Block = {
   time: number;
   tx: Array<{
@@ -21,7 +24,7 @@ const client = new Client({
   port: Number(process.env.BITCOIN_RPC_PORT) || 443,
   username: process.env.BITCOIN_RPC_USER || "",
   password: process.env.BITCOIN_RPC_PASS || "",
-  timeout: 30000,
+  timeout: 60000,
   ssl: {
     enabled: true,
     strict: process.env.ENV !== "development",
@@ -81,25 +84,40 @@ const createBlock = async (
 };
 
 const watchForNewBlocks = async () => {
-  try {
-    const blockchainInfo = await client.getBlockchainInfo();
-    const currentBlockHash = blockchainInfo.bestblockhash;
-    if (lastKnownBlock === null) {
-      lastKnownBlock = currentBlockHash;
-    }
-    if (lastKnownBlock !== currentBlockHash) {
-      lastKnownBlock = currentBlockHash;
-
+  for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+    try {
       const blockchainInfo = await client.getBlockchainInfo();
-      const latestBlockHash = await client.getBlockHash(blockchainInfo.blocks);
-      const block = await client.getBlock(latestBlockHash, 2);
-      await createBlock(latestBlockHash, blockchainInfo.blocks, block);
+      const currentBlockHash = blockchainInfo.bestblockhash;
+      if (lastKnownBlock === null) {
+        lastKnownBlock = currentBlockHash;
+      }
+      if (lastKnownBlock !== currentBlockHash) {
+        lastKnownBlock = currentBlockHash;
+
+        const latestBlockHash = await client.getBlockHash(
+          blockchainInfo.blocks
+        );
+        const block = await client.getBlock(latestBlockHash, 2);
+        await createBlock(latestBlockHash, blockchainInfo.blocks, block);
+      }
+      break;
+    } catch (error) {
+      console.error(
+        `Error watching for new blocks (attempt ${
+          attempt + 1
+        }/${MAX_RETRIES}):`,
+        error
+      );
+      if (attempt === MAX_RETRIES - 1) {
+        console.error("Max retries reached. Giving up.");
+      } else {
+        setTimeout(watchForNewBlocks, RETRY_DELAY);
+      }
     }
-  } catch (error) {
-    console.error("Error watching for new blocks:", error);
-  } finally {
-    setTimeout(watchForNewBlocks, 10000);
   }
+
+  // Schedule the next check
+  setTimeout(watchForNewBlocks, 25000);
 };
 
 watchForNewBlocks();
