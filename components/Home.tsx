@@ -7,6 +7,7 @@ import {
   Button,
   useColorModeValue,
   Input,
+  Link,
 } from "@chakra-ui/react";
 import Pet from "../components/Pet";
 import { useUser } from "../contexts/UserContext";
@@ -162,7 +163,13 @@ const Home = () => {
         py={4}
         color={useColorModeValue("gray.600", "gray.200")}
       >
-        <Text>Created by blank 🖤</Text>
+        <Link
+          href="https://github.com/bl-nkd-v/biting-teacup-crappers"
+          isExternal
+        >
+          <Text mb={2}>View on GitHub</Text>
+        </Link>
+        <Text>Created by blank5 🖤</Text>
       </Box>
     </Box>
   );
