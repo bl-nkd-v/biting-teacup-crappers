@@ -162,7 +162,7 @@ const Home = () => {
         py={4}
         color={useColorModeValue("gray.600", "gray.200")}
       >
-        <Text>Created by blankthedev 🖤</Text>
+        <Text>Created by blank 🖤</Text>
       </Box>
     </Box>
   );
