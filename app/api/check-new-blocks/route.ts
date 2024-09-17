@@ -6,6 +6,8 @@ import {
 } from "@/app/services/bitcoin";
 import prisma from "@/app/services/database";
 
+// TODO: Add auth
+// Done as a quick fix because the eggs/blocks are not updating on deployed environment (misunderstood how nextjs works)
 export async function GET() {
   try {
     const blockchainInfo = await client.getBlockchainInfo();
@@ -31,6 +33,7 @@ export async function GET() {
       return NextResponse.json({
         message: "New block processed",
         blockHeight: blockchainInfo.blocks,
+        reward,
       });
     }
 
