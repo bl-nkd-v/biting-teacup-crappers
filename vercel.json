@@ -1,12 +1,12 @@
 {
   "crons": [
-    // {
-    //   "path": "/api/sync-blocks",
-    //   "schedule": "* * * * *"
-    // },
-    // {
-    //   "path": "/api/update-hunger",
-    //   "schedule": "* * * * *"
-    // }
+    {
+      "path": "/api/sync-blocks",
+      "schedule": "* * * * *"
+    },
+    {
+      "path": "/api/update-hunger",
+      "schedule": "* * * * *"
+    }
   ]
 }
