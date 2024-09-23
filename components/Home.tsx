@@ -2,37 +2,51 @@ import {
   Box,
   Container,
   Heading,
-  Text,
-  VStack,
-  Button,
+  // Button,
   useColorModeValue,
-  Input,
+  // Input,
   Link,
 } from "@chakra-ui/react";
-import Pet from "../components/Pet";
-import { useUser } from "../contexts/UserContext";
-import { useState } from "react";
-import BitcoinBlockTracker from "./BitcoinBlockTracker";
-import Leaderboard from "./Leaderboard";
+// import Pet from "../components/Pet";
+// import { useUser } from "../contexts/UserContext";
+// import { useState } from "react";
+// import BitcoinBlockTracker from "./BitcoinBlockTracker";
+// import Leaderboard from "./Leaderboard";
+import { Center, Text, VStack } from "@chakra-ui/react";
+
+const RuggedMessage = () => (
+  <Center>
+    <VStack spacing={6}>
+      <Heading as="h2" size="xl" textAlign="center">
+        Get Rugged.
+      </Heading>
+      <Text fontSize="lg" textAlign="center" maxW="600px">
+        Thanks for Playing! I&apos;ve temporarily paused the game due to
+        reaching my database usage limits. I may someday bring it back with
+        improvements!
+      </Text>
+    </VStack>
+  </Center>
+);
 
 const Home = () => {
-  const { userId, setUserId } = useUser();
-  const [username, setUsername] = useState("");
+  // const { userId, setUserId } = useUser();
+  // const [username, setUsername] = useState("");
 
   const bgGradient = useColorModeValue(
     "linear(to-b, purple.100, blue.100)",
     "linear(to-b, purple.900, blue.900)"
   );
-  const connectBgColor = useColorModeValue("gray.50", "gray.600");
+  // const connectBgColor = useColorModeValue("gray.50", "gray.600");
   // const connectTextColor = useColorModeValue("gray.700", "white");
 
-  const submitUsername = () => {
-    setUserId(username);
-  };
+  // const submitUsername = () => {
+  //   setUserId(username);
+  // };
 
-  const logout = () => {
-    setUserId(null);
-  };
+  // const logout = () => {
+  //   setUserId(null);
+  // };
 
   return (
     <Box minHeight="100vh" bgGradient={bgGradient}>
@@ -50,7 +64,19 @@ const Home = () => {
             Biting Teacup Crappers
           </Text>
 
-          {userId && <Button onClick={logout}>Log Out</Button>}
+          <Box
+            p={8}
+            bg={useColorModeValue("white", "gray.700")}
+            borderRadius="lg"
+            boxShadow="xl"
+            overflow="hidden"
+            w="full"
+            maxW="3xl"
+          >
+            <RuggedMessage />
+          </Box>
+
+          {/* {userId && <Button onClick={logout}>Log Out</Button>} */}
 
           <Box
             p={8}
@@ -99,6 +125,7 @@ const Home = () => {
             </VStack>
           </Box>
 
+          {/* 
           <Box
             p={8}
             bg={useColorModeValue("white", "gray.700")}
@@ -118,7 +145,7 @@ const Home = () => {
                 <Button colorScheme="blue">Connect Wallet</Button>
                 <Text fontSize="xl" color={connectTextColor}>
                   Don&apos;t have a wallet?
-                </Text> */}
+                </Text>
                 <Input
                   placeholder="Enter your username"
                   value={username}
@@ -129,8 +156,10 @@ const Home = () => {
                 </Button>
               </VStack>
             )}
-          </Box>
+          </Box> 
+          */}
 
+          {/* 
           <Box
             p={8}
             bg={useColorModeValue("white", "gray.700")}
@@ -141,9 +170,9 @@ const Home = () => {
             maxW="3xl"
           >
             <Leaderboard />
-          </Box>
+          </Box> */}
 
-          <Box
+          {/* <Box
             p={8}
             bg={useColorModeValue("white", "gray.700")}
             borderRadius="lg"
@@ -153,7 +182,7 @@ const Home = () => {
             maxW="3xl"
           >
             <BitcoinBlockTracker />
-          </Box>
+          </Box> */}
         </VStack>
       </Container>
 
